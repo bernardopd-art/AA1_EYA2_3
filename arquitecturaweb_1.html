@@ -297,78 +297,80 @@
 
             return div;
         }
+	function inicializarJuego() {
+  const container = document.getElementById('cards-container');
+  container.innerHTML = '';
+  tarjetas.forEach(tarjeta => {
+    container.appendChild(crearTarjeta(tarjeta));
+  });
 
-        function inicializarJuego() {
-            const container = document.getElementById('cards-container');
-            container.innerHTML = '';
-            tarjetas.forEach(tarjeta => {
-                container.appendChild(crearTarjeta(tarjeta));
-            });
+  // listener inicial del botón
+  const btnVerificar = document.getElementById('btn-verificar');
+  btnVerificar.onclick = verificarRespuestas;
 
-            document.querySelectorAll('.drop-zone').forEach(zone => {
-                zone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    zone.classList.add('drag-over');
-                });
+  // listeners de drag & drop (tu código actual)
+  document.querySelectorAll('.drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      zone.classList.add('drag-over');
+    });
 
-                zone.addEventListener('dragleave', () => {
-                    zone.classList.remove('drag-over');
-                });
+    zone.addEventListener('dragleave', () => {
+      zone.classList.remove('drag-over');
+    });
 
-                zone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    zone.classList.remove('drag-over');
-                    const tarjeta = document.querySelector('.tarjeta.dragging');
-                    if (tarjeta) {
-                        zone.appendChild(tarjeta);
-                    }
-                });
-            });
-        }
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      const tarjeta = document.querySelector('.tarjeta.dragging');
+      if (tarjeta) {
+        zone.appendChild(tarjeta);
+      }
+    });
+  });
 
-        function verificarRespuestas() {
-            const feedback = document.getElementById('feedback');
-            const btnVerificar = document.getElementById('btn-verificar');
+  // NO llames verificarRespuestas(); aquí, que es lo que deshabilita / cambia el botón antes de tiempo
+}
 
-            let todasCorrectas = true;
-            let correctas = 0;
+       function verificarRespuestas() {
+  const feedback = document.getElementById('feedback');
+  const btnVerificar = document.getElementById('btn-verificar');
 
-            document.querySelectorAll('.tarjeta').forEach(tarjeta => {
-                const columna = tarjeta.parentElement.dataset.column;
-                const respuestaCorrecta = tarjeta.dataset.respuesta;
+  let todasCorrectas = true;
+  let correctas = 0;
 
-                tarjeta.classList.remove('cliente-correcto', 'servidor-correcto', 'incorrecto');
+  document.querySelectorAll('.tarjeta').forEach(tarjeta => {
+    const columna = tarjeta.parentElement.dataset.column;
+    const respuestaCorrecta = tarjeta.dataset.respuesta;
 
-                if (columna === respuestaCorrecta) {
-                    tarjeta.classList.add(respuestaCorrecta === 'cliente' ? 'cliente-correcto' : 'servidor-correcto');
-                    correctas++;
-                } else {
-                    tarjeta.classList.add('incorrecto');
-                    todasCorrectas = false;
-                }
-            });
+    tarjeta.classList.remove('cliente-correcto', 'servidor-correcto', 'incorrecto');
 
-            if (todasCorrectas) {
-                feedback.className = 'feedback success';
-                feedback.textContent = '🎉 ¡Excelente! ¡Has ordenado correctamente toda la arquitectura web!';
+    if (columna === respuestaCorrecta) {
+      tarjeta.classList.add(respuestaCorrecta === 'cliente' ? 'cliente-correcto' : 'servidor-correcto');
+      correctas++;
+    } else {
+      tarjeta.classList.add('incorrecto');
+      todasCorrectas = false;
+    }
+  });
 
-                // Botón cambia a "Volver a Canva" y redirige al enlace tuyo
-                btnVerificar.textContent = '➡️ Volver a Canva';
-                btnVerificar.disabled = false;
-                btnVerificar.onclick = () => {
-                    window.open('https://canva.link/e9e4hby3cs3ryc0', '_blank', 'noopener,noreferrer');
-                };
-            } else {
-                feedback.className = 'feedback error';
-                feedback.textContent = `⚠️ Aún no está correcto. Has acertado ${correctas} de 6. ¡Inténtalo de nuevo!`;
+  if (todasCorrectas) {
+    feedback.className = 'feedback success';
+    feedback.textContent = '🎉 ¡Excelente! ¡Has ordenado correctamente toda la arquitectura web!';
 
-                // Botón sigue siendo "Volver a intentar"
-                btnVerificar.textContent = '✓ Volver a intentar';
-                btnVerificar.disabled = false;
-                btnVerificar.onclick = verificarRespuestas;
-            }
-        }
+    // Solo cambia el texto; el onclick ya está definido en inicializarJuego
+    btnVerificar.textContent = '➡️ Volver a Canva';
+    btnVerificar.onclick = () => {
+      window.open('https://canva.link/e9e4hby3cs3ryc0', '_blank', 'noopener,noreferrer');
+    };
+  } else {
+    feedback.className = 'feedback error';
+    feedback.textContent = `⚠️ Aún no está correcto. Has acertado ${correctas} de 6. ¡Inténtalo de nuevo!`;
 
+    btnVerificar.textContent = '✓ Volver a intentar';
+    // btnVerificar.onclick = verificarRespuestas; // esto sobra: ya estaba
+  }
+}
         function reiniciar() {
             document.getElementById('feedback').className = 'feedback';
             document.getElementById('btn-verificar').textContent = '✓ Verificar';
