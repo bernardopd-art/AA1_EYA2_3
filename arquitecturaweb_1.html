@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reto 2 - Arquitectura Web</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 1000px;
+            width: 100%;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        .header p {
+            color: #555;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .intro-text {
+            background: #f0f4ff;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 1em;
+            line-height: 1.7;
+        }
+        .columns-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .column {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 600px;
+            border: 3px dashed #667eea;
+        }
+        .column-header {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            color: #667eea;
+        }
+        .column.cliente .column-header {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        .column.servidor .column-header {
+            color: #764ba2;
+            border-bottom-color: #764ba2;
+        }
+        .drop-zone {
+            min-height: 500px;
+            padding: 10px;
+            border-radius: 8px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        .drop-zone.drag-over {
+            background: #e8eeff;
+            border: 2px solid #667eea;
+        }
+        .tarjeta {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            cursor: grab;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .tarjeta:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .tarjeta.dragging {
+            opacity: 0.7;
+            cursor: grabbing;
+        }
+        .tarjeta.cliente-correcto {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .tarjeta.servidor-correcto {
+            border-color: #764ba2;
+            background: #f3e5ff;
+        }
+        .tarjeta.incorrecto {
+            border-color: #ff6b6b;
+            background: #ffe5e5;
+        }
+        .cards-bank {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fff5f5;
+            border-radius: 8px;
+            border: 2px solid #ffd700;
+        }
+        .cards-bank-title {
+            font-weight: bold;
+            color: #ff8c00;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-verificar {
+            background: #667eea;
+            color: white;
+        }
+        .btn-verificar:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+        .btn-reiniciar {
+            background: #ccc;
+            color: #333;
+        }
+        .btn-reiniciar:hover {
+            background: #bbb;
+            transform: scale(1.05);
+        }
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .feedback.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+            display: block;
+        }
+        .feedback.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .columns-container {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 1.8em;
+            }
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Reto 2 – Ordena la arquitectura web</h1>
+            <div class="intro-text">
+                <p><strong>La web del instituto está hecha un caos.</strong></p>
+                <p>Tienes fragmentos de código y tareas que pertenecen al cliente (navegador) y al servidor (máquina remota).</p>
+                <p><strong>Para reactivar la aplicación, arrastra cada tarjeta a la columna correcta.</strong></p>
+            </div>
+        </div>
+
+        <div class="cards-bank">
+            <div class="cards-bank-title">📦 Arrastra las tarjetas desde aquí:</div>
+            <div id="cards-container"></div>
+        </div>
+
+        <div class="columns-container">
+            <div class="column cliente">
+                <div class="column-header">🖥️ CLIENTE (NAVEGADOR)</div>
+                <div class="drop-zone" data-column="cliente"></div>
+            </div>
+            <div class="column servidor">
+                <div class="column-header">🖲️ SERVIDOR</div>
+                <div class="drop-zone" data-column="servidor"></div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <!-- Botón que cambia según el resultado -->
+            <button class="btn btn-verificar" id="btn-verificar">
+                ✓ Verificar
+            </button>
+            <button class="btn btn-reiniciar" onclick="reiniciar()">↻ Reiniciar</button>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+    <script>
+        const tarjetas = [
+            {
+                id: 1,
+                texto: "HTML que muestra el menú principal de la web del instituto.",
+                respuestaCorrecta: "cliente"
+            },
+            {
+                id: 2,
+                texto: "JavaScript que valida un formulario antes de enviarlo (comprueba que has escrito el email).",
+                respuestaCorrecta: "cliente"
+            },
+            {
+                id: 3,
+                texto: "Consulta a la base de datos de alumnos para obtener sus notas.",
+                respuestaCorrecta: "servidor"
+            },
+            {
+                id: 4,
+                texto: "Código que genera un PDF con el boletín de notas en el servidor.",
+                respuestaCorrecta: "servidor"
+            },
+            {
+                id: 5,
+                texto: "CSS que cambia el color del botón cuando pasas el ratón por encima.",
+                respuestaCorrecta: "cliente"
+            },
+            {
+                id: 6,
+                texto: "Función que guarda una nueva nota en la base de datos.",
+                respuestaCorrecta: "servidor"
+            }
+        ];
+
+        function crearTarjeta(tarjeta) {
+            const div = document.createElement('div');
+            div.className = 'tarjeta';
+            div.draggable = true;
+            div.dataset.id = tarjeta.id;
+            div.dataset.respuesta = tarjeta.respuestaCorrecta;
+            div.textContent = tarjeta.texto;
+
+            div.addEventListener('dragstart', (e) => {
+                div.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+            });
+
+            div.addEventListener('dragend', () => {
+                div.classList.remove('dragging');
+            });
+
+            return div;
+        }
+
+        function inicializarJuego() {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+            tarjetas.forEach(tarjeta => {
+                container.appendChild(crearTarjeta(tarjeta));
+            });
+
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    const tarjeta = document.querySelector('.tarjeta.dragging');
+                    if (tarjeta) {
+                        zone.appendChild(tarjeta);
+                    }
+                });
+            });
+        }
+
+        function verificarRespuestas() {
+            const feedback = document.getElementById('feedback');
+            const btnVerificar = document.getElementById('btn-verificar');
+
+            let todasCorrectas = true;
+            let correctas = 0;
+
+            document.querySelectorAll('.tarjeta').forEach(tarjeta => {
+                const columna = tarjeta.parentElement.dataset.column;
+                const respuestaCorrecta = tarjeta.dataset.respuesta;
+
+                tarjeta.classList.remove('cliente-correcto', 'servidor-correcto', 'incorrecto');
+
+                if (columna === respuestaCorrecta) {
+                    tarjeta.classList.add(respuestaCorrecta === 'cliente' ? 'cliente-correcto' : 'servidor-correcto');
+                    correctas++;
+                } else {
+                    tarjeta.classList.add('incorrecto');
+                    todasCorrectas = false;
+                }
+            });
+
+            if (todasCorrectas) {
+                feedback.className = 'feedback success';
+                feedback.textContent = '🎉 ¡Excelente! ¡Has ordenado correctamente toda la arquitectura web!';
+
+                // Botón cambia a "Volver a Canva" y redirige al enlace tuyo
+                btnVerificar.textContent = '➡️ Volver a Canva';
+                btnVerificar.disabled = false;
+                btnVerificar.onclick = () => {
+                    window.open('https://canva.link/e9e4hby3cs3ryc0', '_blank', 'noopener,noreferrer');
+                };
+            } else {
+                feedback.className = 'feedback error';
+                feedback.textContent = `⚠️ Aún no está correcto. Has acertado ${correctas} de 6. ¡Inténtalo de nuevo!`;
+
+                // Botón sigue siendo "Volver a intentar"
+                btnVerificar.textContent = '✓ Volver a intentar';
+                btnVerificar.disabled = false;
+                btnVerificar.onclick = verificarRespuestas;
+            }
+        }
+
+        function reiniciar() {
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('btn-verificar').textContent = '✓ Verificar';
+            document.getElementById('btn-verificar').onclick = verificarRespuestas;
+
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.innerHTML = '';
+            });
+            inicializarJuego();
+        }
+
+        // Inicializar el juego al cargar
+        inicializarJuego();
+    </script>
+</body>
+</html>
