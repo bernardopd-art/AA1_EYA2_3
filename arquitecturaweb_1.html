@@ -62,7 +62,7 @@
             background: #f8f9fa;
             border-radius: 12px;
             padding: 20px;
-            min-height: 600px;
+            min-height: 420px;
             border: 3px dashed #667eea;
         }
         .column-header {
@@ -82,7 +82,7 @@
             border-bottom-color: #764ba2;
         }
         .drop-zone {
-            min-height: 500px;
+            min-height: 320px;
             padding: 10px;
             border-radius: 8px;
             background: white;
@@ -126,9 +126,6 @@
             background: #ffe5e5;
         }
         .cards-bank {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
             margin-bottom: 20px;
             padding: 15px;
             background: #fff5f5;
@@ -140,6 +137,12 @@
             color: #ff8c00;
             margin-bottom: 10px;
             font-size: 0.9em;
+        }
+        #cards-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            align-items: start;
         }
         .button-container {
             display: flex;
@@ -197,6 +200,9 @@
             .columns-container {
                 grid-template-columns: 1fr;
             }
+            #cards-container {
+                grid-template-columns: 1fr;
+            }
             .header h1 {
                 font-size: 1.8em;
             }
@@ -234,7 +240,6 @@
         </div>
 
         <div class="button-container">
-            <!-- Botón que cambia según el resultado -->
             <button class="btn btn-verificar" id="btn-verificar">
                 ✓ Verificar
             </button>
@@ -297,80 +302,76 @@
 
             return div;
         }
-	function inicializarJuego() {
-  const container = document.getElementById('cards-container');
-  container.innerHTML = '';
-  tarjetas.forEach(tarjeta => {
-    container.appendChild(crearTarjeta(tarjeta));
-  });
 
-  // listener inicial del botón
-  const btnVerificar = document.getElementById('btn-verificar');
-  btnVerificar.onclick = verificarRespuestas;
+        function inicializarJuego() {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+            tarjetas.forEach(tarjeta => {
+                container.appendChild(crearTarjeta(tarjeta));
+            });
 
-  // listeners de drag & drop (tu código actual)
-  document.querySelectorAll('.drop-zone').forEach(zone => {
-    zone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      zone.classList.add('drag-over');
-    });
+            const btnVerificar = document.getElementById('btn-verificar');
+            btnVerificar.onclick = verificarRespuestas;
 
-    zone.addEventListener('dragleave', () => {
-      zone.classList.remove('drag-over');
-    });
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
 
-    zone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      zone.classList.remove('drag-over');
-      const tarjeta = document.querySelector('.tarjeta.dragging');
-      if (tarjeta) {
-        zone.appendChild(tarjeta);
-      }
-    });
-  });
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
 
-  // NO llames verificarRespuestas(); aquí, que es lo que deshabilita / cambia el botón antes de tiempo
-}
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    const tarjeta = document.querySelector('.tarjeta.dragging');
+                    if (tarjeta) {
+                        zone.appendChild(tarjeta);
+                    }
+                });
+            });
+        }
 
-       function verificarRespuestas() {
-  const feedback = document.getElementById('feedback');
-  const btnVerificar = document.getElementById('btn-verificar');
+        function verificarRespuestas() {
+            const feedback = document.getElementById('feedback');
+            const btnVerificar = document.getElementById('btn-verificar');
 
-  let todasCorrectas = true;
-  let correctas = 0;
+            let todasCorrectas = true;
+            let correctas = 0;
 
-  document.querySelectorAll('.tarjeta').forEach(tarjeta => {
-    const columna = tarjeta.parentElement.dataset.column;
-    const respuestaCorrecta = tarjeta.dataset.respuesta;
+            document.querySelectorAll('.tarjeta').forEach(tarjeta => {
+                const columna = tarjeta.parentElement.dataset.column;
+                const respuestaCorrecta = tarjeta.dataset.respuesta;
 
-    tarjeta.classList.remove('cliente-correcto', 'servidor-correcto', 'incorrecto');
+                tarjeta.classList.remove('cliente-correcto', 'servidor-correcto', 'incorrecto');
 
-    if (columna === respuestaCorrecta) {
-      tarjeta.classList.add(respuestaCorrecta === 'cliente' ? 'cliente-correcto' : 'servidor-correcto');
-      correctas++;
-    } else {
-      tarjeta.classList.add('incorrecto');
-      todasCorrectas = false;
-    }
-  });
+                if (columna === respuestaCorrecta) {
+                    tarjeta.classList.add(respuestaCorrecta === 'cliente' ? 'cliente-correcto' : 'servidor-correcto');
+                    correctas++;
+                } else {
+                    tarjeta.classList.add('incorrecto');
+                    todasCorrectas = false;
+                }
+            });
 
-  if (todasCorrectas) {
-    feedback.className = 'feedback success';
-    feedback.textContent = '🎉 ¡Excelente! ¡Has ordenado correctamente toda la arquitectura web!';
+            if (todasCorrectas) {
+                feedback.className = 'feedback success';
+                feedback.textContent = '🎉 ¡Excelente! ¡Has ordenado correctamente toda la arquitectura web!';
 
-    // Solo cambia el texto; el onclick ya está definido en inicializarJuego
-    btnVerificar.textContent = '➡️ Volver a Canva';
-    btnVerificar.onclick = () => {
-      window.open('https://canva.link/e9e4hby3cs3ryc0', '_blank', 'noopener,noreferrer');
-    };
-  } else {
-    feedback.className = 'feedback error';
-    feedback.textContent = `⚠️ Aún no está correcto. Has acertado ${correctas} de 6. ¡Inténtalo de nuevo!`;
+                btnVerificar.textContent = '➡️ Volver a Canva';
+                btnVerificar.onclick = () => {
+                    window.open('https://canva.link/19fbntg6p47x8z1', '_blank', 'noopener,noreferrer');
+                };
+            } else {
+                feedback.className = 'feedback error';
+                feedback.textContent = `⚠️ Aún no está correcto. Has acertado ${correctas} de 6. ¡Inténtalo de nuevo!`;
 
-    btnVerificar.textContent = '✓ Volver a intentar';
-    // btnVerificar.onclick = verificarRespuestas; // esto sobra: ya estaba
-  }
-}
+                btnVerificar.textContent = '✓ Volver a intentar';
+            }
+        }
+
         function reiniciar() {
             document.getElementById('feedback').className = 'feedback';
             document.getElementById('btn-verificar').textContent = '✓ Verificar';
@@ -382,7 +383,6 @@
             inicializarJuego();
         }
 
-        // Inicializar el juego al cargar
         inicializarJuego();
     </script>
 </body>
