@@ -1,136 +1,457 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hover + Volver a Canva</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reto 3 – Mensaje del servidor principal</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f3f6fb;
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#dbe3ee;
+      --accent:#2563eb;
+      --accent-dark:#1d4ed8;
+      --ok:#15803d;
+      --ok-bg:#dcfce7;
+      --console:#0f172a;
+      --console-text:#d1fae5;
+      --console-muted:#93c5fd;
+      --shadow:0 12px 30px rgba(15,23,42,.10);
+      --radius:18px;
     }
 
-    .panel {
-      width: min(90vw, 700px);
-      background: white;
-      border-radius: 18px;
-      padding: 32px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-      text-align: center;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:linear-gradient(180deg,#eef4ff 0%, var(--bg) 100%);
+      color:var(--text);
     }
 
-    h1 {
-      margin-top: 0;
-      color: #1e3a8a;
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:28px 20px 40px;
     }
 
-    .tarjeta {
-      margin: 28px auto;
-      width: min(100%, 420px);
-      padding: 28px;
-      border-radius: 16px;
-      background: #dbeafe;
-      border: 2px solid #93c5fd;
-      color: #1e3a8a;
-      font-size: 1.1rem;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      position: relative;
+    .slide{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
     }
 
-    .tarjeta:hover {
-      background: #2563eb;
-      color: white;
-      transform: translateY(-4px) scale(1.03);
-      box-shadow: 0 14px 24px rgba(37,99,235,0.25);
+    .hero{
+      padding:28px 28px 14px;
+      background:linear-gradient(135deg,#eff6ff 0%, #ffffff 100%);
+      border-bottom:1px solid var(--line);
     }
 
-    .detalle {
-      margin-top: 14px;
-      font-size: 0.95rem;
-      font-weight: normal;
-      opacity: 0;
-      max-height: 0;
-      overflow: hidden;
-      transition: all 0.3s ease;
+    .badge{
+      display:inline-block;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#dbeafe;
+      color:#1e40af;
+      font-weight:700;
+      font-size:14px;
+      margin-bottom:12px;
     }
 
-    .tarjeta:hover .detalle {
-      opacity: 1;
-      max-height: 80px;
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(28px,4vw,42px);
+      line-height:1.1;
     }
 
-    .acciones {
-      margin-top: 24px;
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
+    .intro{
+      margin:0;
+      font-size:clamp(16px,2vw,20px);
+      line-height:1.6;
+      color:#374151;
+      max-width:80ch;
     }
 
-    button {
-      border: none;
-      border-radius: 10px;
-      padding: 12px 18px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform 0.2s ease, opacity 0.2s ease;
+    .grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:22px;
+      padding:24px 28px 10px;
     }
 
-    button:hover {
-      transform: translateY(-2px);
+    .panel-title{
+      margin:0 0 12px;
+      font-size:22px;
     }
 
-    .btn-canva {
-      background: #8b5cf6;
-      color: white;
+    .console{
+      background:var(--console);
+      color:var(--console-text);
+      border-radius:16px;
+      padding:18px;
+      min-height:280px;
+      border:1px solid #1e293b;
     }
 
-    .btn-mensaje {
-      background: #0f766e;
-      color: white;
+    .console-top{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:14px;
     }
 
-    .salida {
-      margin-top: 20px;
-      color: #0f766e;
-      font-weight: bold;
-      min-height: 24px;
+    .dot{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      display:inline-block;
+    }
+
+    .dot.red{background:#ef4444}
+    .dot.yellow{background:#f59e0b}
+    .dot.green{background:#22c55e}
+
+    .console-label{
+      margin-left:8px;
+      font-size:14px;
+      color:#cbd5e1;
+    }
+
+    .log{
+      font-family:"Courier New", monospace;
+      font-size:16px;
+      line-height:1.7;
+      white-space:pre-wrap;
+    }
+
+    .log .server{color:#93c5fd}
+    .log .client{color:#86efac}
+    .log .path{color:#fcd34d}
+    .log .code{color:#fca5a5}
+
+    .goal-card{
+      background:#f8fafc;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      min-height:280px;
+    }
+
+    .goal-card p{
+      margin:0 0 14px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .work-area{
+      padding:10px 28px 28px;
+    }
+
+    .section-title{
+      margin:10px 0 12px;
+      font-size:22px;
+    }
+
+    .tray, .sentence{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      min-height:72px;
+      padding:14px;
+      border-radius:16px;
+      border:2px dashed #cbd5e1;
+      background:#ffffff;
+    }
+
+    .sentence{
+      margin-bottom:16px;
+      background:#f8fbff;
+    }
+
+    .word{
+      border:none;
+      border-radius:999px;
+      background:var(--accent);
+      color:white;
+      padding:12px 16px;
+      font-size:18px;
+      cursor:pointer;
+      transition:transform .18s ease, background .18s ease, opacity .18s ease;
+    }
+
+    .word:hover{
+      background:var(--accent-dark);
+      transform:translateY(-2px);
+    }
+
+    .word.used{
+      opacity:.45;
+      pointer-events:none;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+      align-items:center;
+    }
+
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:12px 18px;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .btn-check{
+      background:#111827;
+      color:#fff;
+    }
+
+    .btn-reset{
+      background:#e5e7eb;
+      color:#111827;
+    }
+
+    .feedback{
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:14px;
+      font-weight:700;
+      display:none;
+    }
+
+    .feedback.ok{
+      display:block;
+      background:var(--ok-bg);
+      color:var(--ok);
+      border:1px solid #86efac;
+    }
+
+    .feedback.fail{
+      display:block;
+      background:#fee2e2;
+      color:#b91c1c;
+      border:1px solid #fecaca;
+    }
+
+    .mini-help{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .boton-canva{
+      display:none;
+      margin-top:18px;
+      text-decoration:none;
+      background:#7c3aed;
+      color:white;
+      padding:14px 20px;
+      border-radius:12px;
+      font-weight:bold;
+      text-align:center;
+      transition:all .3s ease;
+      box-shadow:0 8px 20px rgba(124,58,237,.25);
+    }
+
+    .boton-canva:hover{
+      background:#6d28d9;
+      transform:translateY(-2px);
+      box-shadow:0 12px 24px rgba(124,58,237,.35);
+    }
+
+    .boton-canva.visible{
+      display:inline-block;
+    }
+
+    @media (max-width: 860px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+      .word{
+        font-size:16px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="panel">
-    <h1>Interacción con hover</h1>
-    <p>Pasa el ratón por la tarjeta para cambiar su aspecto y mostrar información extra.</p>
+  <div class="wrap">
+    <section class="slide">
+      <div class="hero">
+        <div class="badge">DIAPOSITIVA 4 · RETO 3</div>
+        <h1>Reto 3 – Mensaje del servidor principal</h1>
+        <p class="intro">
+          “Has conseguido que la web del instituto vuelva a responder.
+          El servidor te envía un mensaje final, pero está desordenado.
+          Si consigues reconstruirlo, conocerás el objetivo de la clase de hoy.”
+        </p>
+      </div>
 
-    <div class="tarjeta" id="tarjeta">
-      Pasa el ratón por aquí
-      <div class="detalle">Ahora se muestra esta pista o información adicional.</div>
-    </div>
+      <div class="grid">
+        <div>
+          <h2 class="panel-title">Consola del sistema</h2>
+          <div class="console">
+            <div class="console-top">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+              <span class="console-label">server-log.sh</span>
+            </div>
+            <div class="log">
+<span class="server">Servidor:</span> Recibida petición GET <span class="path">/notas</span>
+<span class="server">Servidor:</span> Enviando respuesta HTTP <span class="code">200</span>
+<span class="client">Cliente:</span> Recibiendo HTML y mostrando la tabla de notas
+<span class="client">Cliente:</span> Renderizando la página en la pantalla
+            </div>
+          </div>
+        </div>
 
-    <div class="acciones">
-      <button class="btn-mensaje" onclick="mostrarMensaje()">Mostrar mensaje</button>
-      <button class="btn-canva" onclick="volverCanva()">Volver a Canva</button>
-    </div>
+        <div>
+          <h2 class="panel-title">Objetivo oculto</h2>
+          <div class="goal-card">
+            <p>
+              Pulsa las palabras en el orden correcto para reconstruir el mensaje final del servidor.
+            </p>
+            <p>
+              Cada vez que pulses una palabra, se añadirá a la frase. Si te equivocas, pulsa “Reiniciar”.
+            </p>
+            <p>
+              Cuando completes la frase, podrás descubrir el objetivo de la clase.
+            </p>
+          </div>
+        </div>
+      </div>
 
-    <div class="salida" id="salida"></div>
+      <div class="work-area">
+        <h2 class="section-title">Construye la frase</h2>
+
+        <div id="sentence" class="sentence" aria-label="Frase construida"></div>
+
+        <div id="tray" class="tray" aria-label="Palabras disponibles"></div>
+
+        <div class="actions">
+          <button class="btn btn-check" id="checkBtn">Comprobar frase</button>
+          <button class="btn btn-reset" id="resetBtn">Reiniciar</button>
+        </div>
+
+        <div id="feedback" class="feedback"></div>
+
+        <a
+          id="botonCanva"
+          class="boton-canva"
+          href="https://canva.link/5xtlyuingpyrp4t"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Reto conseguido volver a la Presentación Canva - Diapositiva 16
+        </a>
+
+        <div class="mini-help">
+          Frase objetivo: una oración sobre la diferencia entre cliente y servidor en una web.
+        </div>
+      </div>
+    </section>
   </div>
 
   <script>
-    function mostrarMensaje() {
-      document.getElementById('salida').textContent = 'Has activado la acción correctamente.';
+    const words = [
+      "hoy","vamos","a","entender","la","diferencia","entre",
+      "cliente","y","servidor","en","una","web"
+    ];
+
+    const correctSentence = "hoy vamos a entender la diferencia entre cliente y servidor en una web";
+
+    const tray = document.getElementById("tray");
+    const sentence = document.getElementById("sentence");
+    const checkBtn = document.getElementById("checkBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const feedback = document.getElementById("feedback");
+    const botonCanva = document.getElementById("botonCanva");
+
+    function renderWords() {
+      tray.innerHTML = "";
+      words.forEach((word, index) => {
+        const btn = document.createElement("button");
+        btn.className = "word";
+        btn.textContent = word;
+        btn.dataset.index = index;
+        btn.addEventListener("click", () => addWord(btn, word));
+        tray.appendChild(btn);
+      });
     }
 
-    function volverCanva() {
-      const urlCanva = 'https://canva.link/5xtlyuingpyrp4t';
-      window.open(urlCanva, '_blank', 'noopener,noreferrer');
+    function addWord(button, word) {
+      const token = document.createElement("button");
+      token.className = "word";
+      token.textContent = word;
+      token.title = "Pulsa para quitar";
+      token.addEventListener("click", () => {
+        token.remove();
+        button.classList.remove("used");
+      });
+      sentence.appendChild(token);
+      button.classList.add("used");
+      clearFeedback();
+      botonCanva.classList.remove("visible");
     }
+
+    function getCurrentSentence() {
+      return [...sentence.querySelectorAll(".word")]
+        .map(el => el.textContent.trim())
+        .join(" ");
+    }
+
+    function clearFeedback() {
+      feedback.className = "feedback";
+      feedback.style.display = "none";
+      feedback.textContent = "";
+    }
+
+    function showOk(msg) {
+      feedback.className = "feedback ok";
+      feedback.style.display = "block";
+      feedback.textContent = msg;
+    }
+
+    function showFail(msg) {
+      feedback.className = "feedback fail";
+      feedback.style.display = "block";
+      feedback.textContent = msg;
+    }
+
+    checkBtn.addEventListener("click", () => {
+      const built = getCurrentSentence();
+      if (!built) {
+        showFail("Aún no has construido ninguna frase.");
+        botonCanva.classList.remove("visible");
+        return;
+      }
+
+      if (built === correctSentence) {
+        showOk("✅ Correcto: hoy vamos a entender la diferencia entre cliente y servidor en una web.");
+        botonCanva.classList.add("visible");
+      } else {
+        showFail("❌ La frase aún no está en el orden correcto. Revisa el orden de las palabras.");
+        botonCanva.classList.remove("visible");
+      }
+    });
+
+    resetBtn.addEventListener("click", () => {
+      sentence.innerHTML = "";
+      document.querySelectorAll("#tray .word").forEach(btn => btn.classList.remove("used"));
+      clearFeedback();
+      botonCanva.classList.remove("visible");
+    });
+
+    renderWords();
   </script>
 </body>
 </html>
