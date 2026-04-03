@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hover + Volver a Canva</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f6fb;
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+    }
+
+    .panel {
+      width: min(90vw, 700px);
+      background: white;
+      border-radius: 18px;
+      padding: 32px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #1e3a8a;
+    }
+
+    .tarjeta {
+      margin: 28px auto;
+      width: min(100%, 420px);
+      padding: 28px;
+      border-radius: 16px;
+      background: #dbeafe;
+      border: 2px solid #93c5fd;
+      color: #1e3a8a;
+      font-size: 1.1rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .tarjeta:hover {
+      background: #2563eb;
+      color: white;
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 14px 24px rgba(37,99,235,0.25);
+    }
+
+    .detalle {
+      margin-top: 14px;
+      font-size: 0.95rem;
+      font-weight: normal;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .tarjeta:hover .detalle {
+      opacity: 1;
+      max-height: 80px;
+    }
+
+    .acciones {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-canva {
+      background: #8b5cf6;
+      color: white;
+    }
+
+    .btn-mensaje {
+      background: #0f766e;
+      color: white;
+    }
+
+    .salida {
+      margin-top: 20px;
+      color: #0f766e;
+      font-weight: bold;
+      min-height: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>Interacción con hover</h1>
+    <p>Pasa el ratón por la tarjeta para cambiar su aspecto y mostrar información extra.</p>
+
+    <div class="tarjeta" id="tarjeta">
+      Pasa el ratón por aquí
+      <div class="detalle">Ahora se muestra esta pista o información adicional.</div>
+    </div>
+
+    <div class="acciones">
+      <button class="btn-mensaje" onclick="mostrarMensaje()">Mostrar mensaje</button>
+      <button class="btn-canva" onclick="volverCanva()">Volver a Canva</button>
+    </div>
+
+    <div class="salida" id="salida"></div>
+  </div>
+
+  <script>
+    function mostrarMensaje() {
+      document.getElementById('salida').textContent = 'Has activado la acción correctamente.';
+    }
+
+    function volverCanva() {
+      const urlCanva = 'https://canva.link/5xtlyuingpyrp4t';
+      window.open(urlCanva, '_blank', 'noopener,noreferrer');
+    }
+  </script>
+</body>
+</html>
